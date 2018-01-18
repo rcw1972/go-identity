@@ -52,6 +52,12 @@ func NewMultiAddressFromBytes(b []byte) (MultiAddress, error) {
 	return MultiAddress{multi}, err
 }
 
+// ID returns the Republic ID of the MultiAddress, or an error.
+func (multiAddr MultiAddress) ID() (ID, error) {
+	addr, err := multiAddr.Address()
+	return addr.ID(), err
+}
+
 // Address returns the Republic address of a MultiAddress, or an error.
 func (multiAddr MultiAddress) Address() (Address, error) {
 	addr, err := multiAddr.ValueForProtocol(RepublicCode)
@@ -59,7 +65,7 @@ func (multiAddr MultiAddress) Address() (Address, error) {
 }
 
 // MarshalJSON implements the json.Marshaler interface.
-func (multiAddr *MultiAddress) MarshalJSON() ([]byte, error) {
+func (multiAddr MultiAddress) MarshalJSON() ([]byte, error) {
 	return json.Marshal(multiAddr.String())
 }
 

@@ -56,15 +56,16 @@ func (keyPair KeyPair) ID() ID {
 
 // Address returns the Republic Address of the KeyPair.
 func (keyPair KeyPair) Address() Address {
-	id := keyPair.ID()
-	hash := make([]byte, 2, IDLength+2)
-	hash[0], hash[1] = multihash.KECCAK_256, IDLength
-	hash = append(hash, id...)
-	return Address(base58.EncodeAlphabet(hash, base58.BTCAlphabet))
+	return keyPair.ID().Address()
+}
+
+// MultiAddress returns the Republic MultiAddress of the KeyPair.
+func (keyPair KeyPair) MultiAddress() (MultiAddress, error) {
+	return keyPair.ID().MultiAddress()
 }
 
 // MarshalJSON implements the json.Marshaler interface.
-func (keyPair *KeyPair) MarshalJSON() ([]byte, error) {
+func (keyPair KeyPair) MarshalJSON() ([]byte, error) {
 	str := base58.Encode(crypto.FromECDSA(keyPair.PrivateKey))
 	return json.Marshal(str)
 }
@@ -104,6 +105,19 @@ func NewID() (ID, KeyPair, error) {
 // String returns the ID as a string.
 func (id ID) String() string {
 	return string(id)
+}
+
+// Address returns the Republic Address of the ID.
+func (id ID) Address() Address {
+	hash := make([]byte, 2, IDLength+2)
+	hash[0], hash[1] = multihash.KECCAK_256, IDLength
+	hash = append(hash, id...)
+	return Address(base58.EncodeAlphabet(hash, base58.BTCAlphabet))
+}
+
+// MultiAddress returns the Republic MultiAddress of the ID.
+func (id ID) MultiAddress() (MultiAddress, error) {
+	return NewMultiAddressFromString(fmt.Sprintf("/republic/%s", id.Address().String()))
 }
 
 // AddressLength is the number of bytes in an Address.
@@ -173,6 +187,12 @@ func (address Address) SamePrefixLength(other Address) (int, error) {
 		}
 	}
 	return ret, nil
+}
+
+// ID returns the Republic ID of the Address.
+func (address Address) ID() ID {
+	data := base58.DecodeAlphabet(address.String(), base58.BTCAlphabet)
+	return ID(data[2:])
 }
 
 // MultiAddress returns the Republic multi-address of the Address. It can be
