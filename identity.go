@@ -7,6 +7,7 @@ import (
 
 // IDLength is the number of bytes in an ID.
 const IDLength = 20
+const HashLength = 32
 
 // An ID is a slice of 20 bytes that can be converted into an Address.
 // It must always be example 20 bytes.
