@@ -15,7 +15,7 @@ keyPair, err := identity.NewKeyPair()
 
 ## ID
 
-Republic IDs are used to identity miners and traders in the Republic Protocol, and are required when registering with the Registrar. To generate an ID, take the first 20 bytes of the Keccak-256 hash of your public key. 
+Republic IDs are used to identity miners and traders in the Republic Protocol, and are required when registering with the Registrar. To generate an ID, take the last 20 bytes of the Keccak-256 hash of your public key. 
 
 ```go
 keyPair, err := identity.NewKeyPair()
